@@ -105,10 +105,10 @@ internal class JobInitCommandService : ICommandService<JobInitCommand>
                    Md5key: md5key,
                    AgentId: agentId);
 
-                gameProviderAgentMapper.Add(gameProviderConfig.Name, jobExecuteCommand);
+                gameProviderAgentMapper.Add(agentId, jobExecuteCommand);
 
                 RecurringJob.AddOrUpdate<IHangfireUtensil>(
-                    recurringJobId: string.Concat(gameProviderConfig.Name, "-", gameProviderConfig.GameProviderConfigId),
+                    recurringJobId: string.Concat(gameProviderConfig.Name, "|", agentId, "|", gameProviderConfig.GameProviderConfigId),
                     methodCall: service => service.JobExecuteAsync(jobExecuteCommand),
                     cronExpression: Cron.Minutely(),
                     options: _recurringJobOptions);
