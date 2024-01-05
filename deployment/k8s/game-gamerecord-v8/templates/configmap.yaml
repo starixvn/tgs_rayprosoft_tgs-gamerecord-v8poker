@@ -7,13 +7,14 @@ data:
   appsettings.json: |
     {
       "Logging": {
-         "LogLevel": {
-          "Default": "Warning"
-          }
+        "LogLevel": {
+          "Default": "Warning",
+          "Tgs.GameRecord.V8Poker.Messages": "Information"
+        }
       },
       "GameRecord": {
         "GameCommandClientBaseUrl": "http://game-gamecommand/",
-        "GameInterfaceClientBaseUrl": "dns:///game-gameinterface-v8:9090/"
+        "GameInterfaceBaseUrl": "dns:///game-gameinterface-v8:9090/"
       }
     }
   otel-collector-config.yaml: |

@@ -1,6 +1,6 @@
 ﻿namespace Tgs.GameRecord.V8Poker.Common;
 
-public record GameRecordMessage
+public record V8PokerGameRecordMessage
 {
     public Uri ApiUrl { get; init; } = default!;
     public string Deskey { get; init; } = default!;

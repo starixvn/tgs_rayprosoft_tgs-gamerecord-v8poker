@@ -5,25 +5,14 @@ using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.V8Poker.Core.ApplicationServices;
 
-internal class PullRecordCommandService : ICommandService<PullRecordCommand>
+internal class PullRecordCommandService(
+    ILogger<PullRecordCommandService> logger,
+    IGameInterfaceV8PokerClient client,
+    ICommandService<HandleRecordCommand> service) : ICommandService<PullRecordCommand>
 {
-    private readonly IGameInterfaceV8PokerClient _client;
-    private readonly ILogger<PullRecordCommandService> _logger;
-    private readonly ICommandService<HandleRecordCommand> _service;
-
-    public PullRecordCommandService(
-        ILogger<PullRecordCommandService> logger,
-        IGameInterfaceV8PokerClient client,
-        ICommandService<HandleRecordCommand> service)
-    {
-        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-    }
-
     public async ValueTask ExecuteAsync(PullRecordCommand command, CancellationToken cancellationToken = default)
     {
-        var infos = await _client.GameWagerAsync(
+        var infos = await client.GameWagerAsync(
             apiUrl: command.ApiUrl,
             deskey: command.Deskey,
             md5key: command.Md5key,
@@ -40,7 +29,7 @@ internal class PullRecordCommandService : ICommandService<PullRecordCommand>
         {
             try
             {
-                await _service
+                await service
                 .ExecuteAsync(
                      command: new HandleRecordCommand(info),
                      cancellationToken: cancellationToken)
@@ -48,7 +37,7 @@ internal class PullRecordCommandService : ICommandService<PullRecordCommand>
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({info})", DateTime.Now.ToString("o"), info);
+                logger.LogError(ex, "LogOn:{logOn} Message: An exception occurred in this game record.({info})", DateTime.Now.ToString("o"), info);
             }
         }
     }

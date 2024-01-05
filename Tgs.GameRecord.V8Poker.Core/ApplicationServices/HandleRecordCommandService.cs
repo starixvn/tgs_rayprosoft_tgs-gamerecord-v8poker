@@ -1,28 +1,22 @@
-﻿using Microsoft.Extensions.Options;
+﻿using System.Text.Json.Nodes;
+using Microsoft.Extensions.Options;
 using Tgs.GameRecord.Handle.Client;
 using Tgs.GameRecord.Handle.Common.Protos;
 using Tgs.ServiceUtility;
 
 namespace Tgs.GameRecord.V8Poker.Core.ApplicationServices;
 
-internal class HandleRecordCommandService : ICommandService<HandleRecordCommand>
+internal class HandleRecordCommandService(
+    IOptions<GameRecordInfoOptions> options,
+    IGameRecordHandleClient client) : ICommandService<HandleRecordCommand>
 {
-    private readonly IGameRecordHandleClient _client;
-    private readonly GameRecordInfoOptions _gameRecordInfo;
-
-    public HandleRecordCommandService(
-        IOptions<GameRecordInfoOptions> options,
-        IGameRecordHandleClient client)
-    {
-        _gameRecordInfo = options.Value;
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+    private readonly GameRecordInfoOptions _gameRecordInfo = options.Value;
 
     public ValueTask ExecuteAsync(HandleRecordCommand command, CancellationToken cancellationToken = default)
     {
         var wagerState = (command.Info.WinLoss.ToDecimal().GetValueOrDefault(0) > 0) ? WagerStates.Win : WagerStates.Lose;
 
-        return _client
+        return client
         .MessageAsync(
             gameProviderCode: _gameRecordInfo.GameProviderCode,
             playerCode: command.Info.PlayerCode,
@@ -45,7 +39,7 @@ internal class HandleRecordCommandService : ICommandService<HandleRecordCommand>
             commission: command.Info.Commission.ToDecimal().GetValueOrDefault(0),
             turnover: command.Info.ValidBet.ToDecimal().GetValueOrDefault(0),
             winLoss: command.Info.WinLoss.ToDecimal().GetValueOrDefault(0),
-            additionalData: command.Info.AdditionalData,
+            additionalData: JsonNode.Parse(command.Info.AdditionalData)!,
             cancellationToken: cancellationToken);
     }
 }

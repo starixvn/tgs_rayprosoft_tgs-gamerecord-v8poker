@@ -35,7 +35,7 @@ internal class JobExecuteCommandService : ICommandService<JobExecuteCommand>
         var endTime = DateTimeOffset.ParseExact(DateTimeOffset.UtcNow.ToString(@"yyyy-MM-dd\THH:mm:00K"), @"yyyy-MM-dd\THH:mm:00K", null, styles: System.Globalization.DateTimeStyles.RoundtripKind);
         var startTime = endTime.AddMinutes(_intervalMinutes * -1);
 
-        var parameters = new GameRecordMessage
+        var parameters = new V8PokerGameRecordMessage
         {
             ApiUrl = command.ApiUrl,
             Deskey = command.Deskey,
@@ -47,9 +47,8 @@ internal class JobExecuteCommandService : ICommandService<JobExecuteCommand>
 
         _logger.LogInformation("LogOn:{logOn} Parameters:{parameters}", DateTime.Now.ToString("u"), parameters);
 
-        return _messageSender
-            .PublishAsync(
-            subject: "gp.gamerecord.schedule.v8",
+        return _messageSender.PublishAsync(
+            subject: V8PokerNatsConst.SchedulePublish,
             data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(parameters)),
             cancellationToken: cancellationToken);
     }

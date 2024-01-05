@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Tgs.GameRecord.V8Poker.Core.ApplicationServices;
-using Tgs.GameRecord.V8Poker.ViewModels;
-using Tgs.ServiceUtility;
+﻿using System.Text;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Tgs.GameRecord.V8Poker.Common;
+using Valhalla.MessageQueue;
 
 namespace Tgs.GameRecord.V8Poker.Controllers;
 
@@ -10,9 +11,9 @@ namespace Tgs.GameRecord.V8Poker.Controllers;
 public class V8PokerController : ControllerBase
 {
     /// <summary>
-    /// Games the record asynchronous.
+    /// Games the record manual asynchronous.
     /// </summary>
-    /// <param name="service">The service.</param>
+    /// <param name="messageSender">The message sender.</param>
     /// <param name="source">The source.</param>
     /// <returns></returns>
     /// <remarks>
@@ -20,7 +21,7 @@ public class V8PokerController : ControllerBase
     ///
     ///     Post
     ///         {
-    ///             "apiRecordUrl": "https://wc-record.xpvcd046.com/",
+    ///             "apiUrl": "https://wc-record.xpvcd046.com/",
     ///             "deskey": "C6995933499B163B",
     ///             "md5key": "628DA8F1857A6529",
     ///             "agentId": "71033",
@@ -28,21 +29,40 @@ public class V8PokerController : ControllerBase
     ///             "endTime": "2023-07-26T12:00:00+08:00"
     ///         }
     /// </remarks>
-    [HttpPost]
-    public ValueTask GameRecordAsync(
-        [FromServices] ICommandService<PullRecordCommand> service,
-        PullRecordViewModel source)
-    {
-        var command = new PullRecordCommand(
-            ApiUrl: source.ApiRecordUrl,
-            Deskey: source.Deskey,
-            Md5key: source.Md5key,
-            AgentId: source.AgentId,
-            StartTime: source.StartTime,
-            EndTime: source.EndTime);
-        return service
-            .ExecuteAsync(
-            command,
-            HttpContext.RequestAborted);
-    }
+    [HttpPost("manual")]
+    public ValueTask GameRecordManualAsync(
+        [FromServices] IMessageSender messageSender,
+        V8PokerGameRecordMessage source)
+        => messageSender.PublishAsync(
+            subject: V8PokerNatsConst.ManualPublish,
+            data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+            cancellationToken: HttpContext.RequestAborted);
+
+    /// <summary>
+    /// Games the record schedule asynchronous.
+    /// </summary>
+    /// <param name="messageSender">The message sender.</param>
+    /// <param name="source">The source.</param>
+    /// <returns></returns>
+    /// <remarks>
+    /// <b>Example</b><br />
+    ///
+    ///     Post
+    ///         {
+    ///             "apiUrl": "https://wc-record.xpvcd046.com/",
+    ///             "deskey": "C6995933499B163B",
+    ///             "md5key": "628DA8F1857A6529",
+    ///             "agentId": "71033",
+    ///             "startTime": "2023-07-26T11:50:00+08:00",
+    ///             "endTime": "2023-07-26T12:00:00+08:00"
+    ///         }
+    /// </remarks>
+    [HttpPost("schedule")]
+    public ValueTask GameRecordScheduleAsync(
+        [FromServices] IMessageSender messageSender,
+        V8PokerGameRecordMessage source)
+        => messageSender.PublishAsync(
+            subject: V8PokerNatsConst.SchedulePublish,
+            data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+            cancellationToken: HttpContext.RequestAborted);
 }
