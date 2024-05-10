@@ -4,5 +4,5 @@ namespace Tgs.GameRecord.V8Poker;
 
 public class IgnoreHangfireAuthorizationFilter : IDashboardAuthorizationFilter
 {
-    public bool Authorize(DashboardContext context) => true;
+	public bool Authorize(DashboardContext context) => true;
 }

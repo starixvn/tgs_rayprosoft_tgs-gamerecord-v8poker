@@ -2,6 +2,6 @@
 
 public record V8PokerNatsConst
 {
-    public const string SchedulePublish = "gp.gamerecord.v8.schedule";
-    public const string ManualPublish = "gp.gamerecord.v8.manual";
+	public const string SchedulePublish = "gp.gamerecord.v8.schedule";
+	public const string ManualPublish = "gp.gamerecord.v8.manual";
 }
