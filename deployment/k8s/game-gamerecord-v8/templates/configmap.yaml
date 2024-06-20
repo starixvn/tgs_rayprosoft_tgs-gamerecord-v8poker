@@ -9,8 +9,9 @@ data:
       "Logging": {
         "LogLevel": {
           "Default": "Warning",
-          "Grpc.Net.Client.Balancer": "Debug",
-          "Tgs.GameRecord.V8Poker.Messages.ManualMessageHandler": "Warning",
+          "Grpc.Net.Client.Balancer": "Warning",
+          "Grpc.Net.Client.Balancer.DnsResolver": "Debug",
+          "Tgs.GameRecord.V8Poker.Messages.ManualMessageHandler": "Information",
           "Tgs.GameRecord.V8Poker.Messages.ScheduleMessageHandler": "Warning",
           "Tgs.GameRecord.V8Poker.Core.ApplicationServices.HandleRecordCommandService": "Warning"
         }
