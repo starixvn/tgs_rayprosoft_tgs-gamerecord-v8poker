@@ -2,7 +2,7 @@
 
 namespace Tgs.GameRecord.V8Poker.Core;
 
-public interface IHangfireUtensil
+public interface IHangfireUtensilRepository
 {
 	public Task JobCheckAsync();
 
