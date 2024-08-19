@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.V8Poker", "Tgs.GameRecord.V8Poker\Tgs.GameRecord.V8Poker.csproj", "{F80C0D09-217D-47AB-9DED-2A9EF230A4AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.V8Poker", "Tgs.GameRecord.V8Poker\Tgs.GameRecord.V8Poker.csproj", "{F80C0D09-217D-47AB-9DED-2A9EF230A4AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.V8Poker.Common", "Tgs.GameRecord.V8Poker.Common\Tgs.GameRecord.V8Poker.Common.csproj", "{2321ABFC-4D80-4A3F-9514-F5794E5701DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.V8Poker.Common", "Tgs.GameRecord.V8Poker.Common\Tgs.GameRecord.V8Poker.Common.csproj", "{2321ABFC-4D80-4A3F-9514-F5794E5701DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.V8Poker.Core", "Tgs.GameRecord.V8Poker.Core\Tgs.GameRecord.V8Poker.Core.csproj", "{EF8EC7CA-4F12-495A-A30B-E07BCCA22FAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.V8Poker.Core", "Tgs.GameRecord.V8Poker.Core\Tgs.GameRecord.V8Poker.Core.csproj", "{EF8EC7CA-4F12-495A-A30B-E07BCCA22FAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.V8Poker.Core.UnitTest", "Tgs.GameRecord.V8Poker.Core.UnitTest\Tgs.GameRecord.V8Poker.Core.UnitTest.csproj", "{39D9D2A0-0D0B-4A99-9CB7-D681CBCCB2E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tgs.GameRecord.V8Poker.Core.UnitTest", "Tgs.GameRecord.V8Poker.Core.UnitTest\Tgs.GameRecord.V8Poker.Core.UnitTest.csproj", "{39D9D2A0-0D0B-4A99-9CB7-D681CBCCB2E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tgs.GameRecord.V8Poker.Repositories", "Tgs.GameRecord.V8Poker.Repositories\Tgs.GameRecord.V8Poker.Repositories.csproj", "{C376D8C9-A1B3-4725-86F3-13BB19C0B0F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{39D9D2A0-0D0B-4A99-9CB7-D681CBCCB2E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39D9D2A0-0D0B-4A99-9CB7-D681CBCCB2E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39D9D2A0-0D0B-4A99-9CB7-D681CBCCB2E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C376D8C9-A1B3-4725-86F3-13BB19C0B0F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C376D8C9-A1B3-4725-86F3-13BB19C0B0F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C376D8C9-A1B3-4725-86F3-13BB19C0B0F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C376D8C9-A1B3-4725-86F3-13BB19C0B0F4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
