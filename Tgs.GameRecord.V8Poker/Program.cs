@@ -89,6 +89,7 @@ builder.Services
 	})
 	.Services
 	.AddSingleton<RedisConnectionManager>()
+	.AddSingleton(TimeProvider.System)
 	.AddGameCommandClient((options, sp) =>
 	{
 		var configuration = sp.GetRequiredService<IConfiguration>();
@@ -164,10 +165,10 @@ app.UseHangfireDashboard(
 	"/hangfire",
 	new DashboardOptions()
 	{
-		Authorization = new[]
-		{
+		Authorization =
+		[
 			new IgnoreHangfireAuthorizationFilter()
-		}
+		]
 	});
 
 _ = app.UseAuthorization();

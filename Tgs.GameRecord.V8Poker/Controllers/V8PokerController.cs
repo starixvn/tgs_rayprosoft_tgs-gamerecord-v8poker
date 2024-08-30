@@ -22,7 +22,7 @@ public class V8PokerController : ControllerBase
 		V8PokerGameRecordMessage source)
 		=> messageSender.PublishAsync(
 			subject: V8PokerNatsConst.ManualPublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+			data: JsonSerializer.SerializeToUtf8Bytes(source),
 			cancellationToken: HttpContext.RequestAborted);
 
 	/// <summary>
@@ -37,6 +37,6 @@ public class V8PokerController : ControllerBase
 		V8PokerGameRecordMessage source)
 		=> messageSender.PublishAsync(
 			subject: V8PokerNatsConst.SchedulePublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(source)),
+			data: JsonSerializer.SerializeToUtf8Bytes(source),
 			cancellationToken: HttpContext.RequestAborted);
 }
