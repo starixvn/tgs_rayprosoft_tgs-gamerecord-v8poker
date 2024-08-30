@@ -8,34 +8,25 @@ using Valhalla.MessageQueue;
 
 namespace Tgs.GameRecord.V8Poker.Core.JobApplicationServices;
 
-internal class JobExecuteCommandService : ICommandService<JobExecuteCommand>
+internal class JobExecuteCommandService(
+	ILogger<JobExecuteCommandService> logger,
+	IOptions<GameRecordInfoOptions> options,
+	TimeProvider timeProvider,
+	IMessageSender messageSender) : ICommandService<JobExecuteCommand>
 {
-	private readonly GameRecordInfoOptions _gameRecordInfo;
-	private readonly double _intervalMinutes;
-	private readonly ILogger<JobExecuteCommandService> _logger;
-	private readonly IMessageSender _messageSender;
-
-	public JobExecuteCommandService(
-		ILogger<JobExecuteCommandService> logger,
-		IOptions<GameRecordInfoOptions> options,
-		IMessageSender messageSender)
-	{
-		_logger = logger ?? throw new ArgumentNullException(nameof(logger));
-		_gameRecordInfo = options.Value;
-		_messageSender = messageSender ?? throw new ArgumentNullException(nameof(messageSender));
-		_intervalMinutes = _gameRecordInfo.IntervalMinutesMax < _gameRecordInfo.IntervalMinutes
-			? _gameRecordInfo.IntervalMinutesMax
-			: _gameRecordInfo.IntervalMinutesMinimum > _gameRecordInfo.IntervalMinutes
-			? _gameRecordInfo.IntervalMinutesMinimum
-			: _gameRecordInfo.IntervalMinutes;
-	}
+	private readonly double _intervalMinutes = options.Value.IntervalMinutesMax < options.Value.IntervalMinutes
+		? options.Value.IntervalMinutesMax
+		: options.Value.IntervalMinutesMinimum > options.Value.IntervalMinutes
+		? options.Value.IntervalMinutesMinimum
+		: options.Value.IntervalMinutes;
 
 	public ValueTask ExecuteAsync(JobExecuteCommand command, CancellationToken cancellationToken = default)
 	{
-		var endTime = DateTimeOffset.ParseExact(DateTimeOffset.UtcNow.ToString(@"yyyy-MM-dd\THH:mm:00K"), @"yyyy-MM-dd\THH:mm:00K", null, styles: System.Globalization.DateTimeStyles.RoundtripKind);
+		var currentTime = timeProvider.GetUtcNow();
+		var endTime = DateTimeOffset.ParseExact(currentTime.ToString(@"yyyy-MM-dd\THH:mm:00K"), @"yyyy-MM-dd\THH:mm:00K", null, styles: System.Globalization.DateTimeStyles.RoundtripKind);
 		var startTime = endTime.AddMinutes(_intervalMinutes * -1);
 
-		var parameters = new V8PokerGameRecordMessage
+		var message = new V8PokerGameRecordMessage
 		{
 			ApiUrl = command.ApiUrl,
 			Deskey = command.Deskey,
@@ -45,11 +36,26 @@ internal class JobExecuteCommandService : ICommandService<JobExecuteCommand>
 			EndTime = endTime
 		};
 
-		_logger.LogInformation("LogOn:{logOn} Parameters:{parameters}", DateTime.Now.ToString("u"), parameters);
+		logger.LogInformation("{logInformation}",
+			JsonSerializer.Serialize(new
+			{
+				LogOn = DateTime.Now.ToString("u"),
+				Subject = V8PokerNatsConst.SchedulePublish,
+				Data = new
+				{
+					command.ApiUrl,
+					command.Deskey,
+					command.Md5key,
+					command.AgentId,
+					StartTime = message.StartTime.ToString("u"),
+					EndTime = message.EndTime.ToString("u")
+				},
+				Message = "This message publishing handler."
+			}));
 
-		return _messageSender.PublishAsync(
+		return messageSender.PublishAsync(
 			subject: V8PokerNatsConst.SchedulePublish,
-			data: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(parameters)),
+			data: JsonSerializer.SerializeToUtf8Bytes(message),
 			cancellationToken: cancellationToken);
 	}
 }
